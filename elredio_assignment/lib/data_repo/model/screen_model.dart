@@ -100,29 +100,29 @@ class Options {
 }
 
 class ChildScreen {
-  List<Frontend>? frontend;
-  List<Backend>? backend;
-  List<Designer>? designer;
+  List<Screens>? frontend;
+  List<Screens>? backend;
+  List<Screens>? designer;
 
   ChildScreen({this.frontend, this.backend, this.designer});
 
   ChildScreen.fromJson(Map<String, dynamic> json) {
     if (json['frontend'] != null) {
-      frontend = <Frontend>[];
+      frontend = <Screens>[];
       json['frontend'].forEach((v) {
-        frontend!.add(Frontend.fromJson(v));
+        frontend!.add(Screens.fromJson(v));
       });
     }
     if (json['backend'] != null) {
-      backend = <Backend>[];
+      backend = <Screens>[];
       json['backend'].forEach((v) {
-        backend!.add(Backend.fromJson(v));
+        backend!.add(Screens.fromJson(v));
       });
     }
     if (json['designer'] != null) {
-      designer = <Designer>[];
+      designer = <Screens>[];
       json['designer'].forEach((v) {
-        designer!.add(Designer.fromJson(v));
+        designer!.add(Screens.fromJson(v));
       });
     }
   }
@@ -138,140 +138,6 @@ class ChildScreen {
     if (designer != null) {
       data['designer'] = designer!.map((v) => v.toJson()).toList();
     }
-    return data;
-  }
-}
-
-class Frontend {
-  String? screenName;
-  String? heading;
-  String? question;
-  String? fields;
-  List<Options>? options;
-  String? ans;
-
-  Frontend(
-      {this.screenName,
-      this.heading,
-      this.question,
-      this.fields,
-      this.options,
-      this.ans});
-
-  Frontend.fromJson(Map<String, dynamic> json) {
-    screenName = json['screen_name'];
-    heading = json['heading'];
-    question = json['question'];
-    fields = json['fields'];
-    if (json['options'] != null) {
-      options = <Options>[];
-      json['options'].forEach((v) {
-        options!.add(Options.fromJson(v));
-      });
-    }
-    ans = json['ans'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['screen_name'] = screenName;
-    data['heading'] = heading;
-    data['question'] = question;
-    data['fields'] = fields;
-    if (options != null) {
-      data['options'] = options!.map((v) => v.toJson()).toList();
-    }
-    data['ans'] = ans;
-    return data;
-  }
-}
-
-
-class Backend {
-  String? screenName;
-  String? heading;
-  String? question;
-  String? hintText;
-  String? fields;
-  List<Options>? options;
-  String? ans;
-
-  Backend(
-      {this.screenName,
-      this.heading,
-      this.question,
-      this.hintText,
-      this.fields,
-      this.options,
-      this.ans});
-
-  Backend.fromJson(Map<String, dynamic> json) {
-    screenName = json['screen_name'];
-    heading = json['heading'];
-    question = json['question'];
-    hintText = json['hint_text'];
-    fields = json['fields'];
-    options = json['options'];
-    ans = json['ans'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['screen_name'] = screenName;
-    data['heading'] = heading;
-    data['question'] = question;
-    data['hint_text'] = hintText;
-    data['fields'] = fields;
-    data['options'] = options;
-    data['ans'] = ans;
-    return data;
-  }
-}
-
-class Designer {
-  String? screenName;
-  String? heading;
-  String? question;
-  String? hintText;
-  String? fields;
-  List<Options>? options;
-  String? ans;
-
-  Designer(
-      {this.screenName,
-      this.heading,
-      this.question,
-      this.hintText,
-      this.fields,
-      this.options,
-      this.ans});
-
-  Designer.fromJson(Map<String, dynamic> json) {
-    screenName = json['screen_name'];
-    heading = json['heading'];
-    question = json['question'];
-    hintText = json['hint_text'];
-    fields = json['fields'];
-    if (json['options'] != null) {
-      options = <Options>[];
-      json['options'].forEach((v) {
-        options!.add(Options.fromJson(v));
-      });
-    }
-    ans = json['ans'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['screen_name'] = screenName;
-    data['heading'] = heading;
-    data['question'] = question;
-    data['hint_text'] = hintText;
-    data['fields'] = fields;
-    if (options != null) {
-      data['options'] = options!.map((v) => v.toJson()).toList();
-    }
-    data['ans'] = ans;
     return data;
   }
 }

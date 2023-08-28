@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:elredio_assignment/constants/api_endpoint.dart';
 import 'package:elredio_assignment/data_repo/model/screen_model.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 class ScreenViewModel extends ChangeNotifier {
   ///LIST OF SCREENS
@@ -15,7 +17,7 @@ class ScreenViewModel extends ChangeNotifier {
   bool isLoading = true;
 
   ///GET LIST OF SCREENS
-Future<void>  getListOfScreens({required String json}) async {
+  Future<void> getListOfScreens({required String json}) async {
     ///
     updateLoading(
       value: true,
@@ -61,5 +63,85 @@ Future<void>  getListOfScreens({required String json}) async {
       return true;
     }
     return false;
+  }
+
+  ///RESET DATA
+  resetData() {
+    currentIndex = 0;
+    screenList.clear();
+  }
+
+  ///
+  String? name;
+  String? gender;
+  String? dob;
+  String? profession;
+  String? technology;
+  String? lastQuestion;
+
+  ///
+  getAllData() {
+    if (screenList.isNotEmpty) {
+      name = screenList.first.ans;
+      gender = screenList[1].ans;
+      dob = screenList[2].ans;
+      profession = screenList[3].ans;
+      if (screenList[currentIndex].childScreen != null) {
+        /// NAVIGATE TO CHILD AS PER LAST ANSWER
+
+        if (screenList.last.ans?.contains("frontend") ?? false) {
+          ///
+          if (screenList.last.childScreen?.frontend?.isNotEmpty ?? false) {
+            technology = screenList.last.childScreen?.frontend?.first.ans;
+            lastQuestion =
+                screenList.last.childScreen?.frontend?.first.question;
+          }
+        } else if (screenList.last.ans?.contains("backend") ?? false) {
+          ///
+          if (screenList.last.childScreen?.backend?.isNotEmpty ?? false) {
+            technology = screenList.last.childScreen?.backend?.first.ans;
+            lastQuestion = screenList.last.childScreen?.backend?.first.question;
+          }
+        } else if (screenList.last.ans?.contains("design") ?? false) {
+          ///
+          if (screenList.last.childScreen?.designer?.isNotEmpty ?? false) {
+            technology = screenList.last.childScreen?.designer?.first.ans;
+            lastQuestion =
+                screenList.last.childScreen?.designer?.first.question;
+          }
+        }
+      }
+    }
+  }
+
+  ///HTTP CLIENT FOR API REQUEST
+  Client http = Client();
+
+  ///
+  Future<bool> postUserInformation() async {
+    Map<String, dynamic> data = {
+      "name": name,
+      "gender": gender,
+      "dob": dob,
+      "profession": profession,
+      "skills": technology
+    };
+    return await http
+        .post(
+      Uri.parse(ApiEngpoints.postUserInfo),
+      body: data,
+    )
+        .then((value) {
+      log("Request Response  ${value.body}");
+
+      if (value.statusCode < 200 || value.statusCode > 200) {
+        return false;
+      } else {
+        return true;
+      }
+    }).catchError((onError) {
+      log("Request Error  $onError");
+      return false;
+    });
   }
 }

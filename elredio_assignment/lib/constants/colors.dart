@@ -8,4 +8,8 @@ class AppColors {
   static Color enabledButtonColor = const Color(0xffFBAA29);
   static Color disabledButtonColor = const Color(0xffFBAA29).withOpacity(0.5);
   static Color textfieldBackColor = const Color(0xFFDADADA);
+
+  static Color green = Colors.green;
+
+  static Color red = Colors.red;
 }

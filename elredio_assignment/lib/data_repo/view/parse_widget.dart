@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:elredio_assignment/constants/colors.dart';
 import 'package:elredio_assignment/constants/strings.dart';
 import 'package:elredio_assignment/constants/textstyle.dart';
@@ -5,7 +7,10 @@ import 'package:elredio_assignment/data_repo/model/screen_model.dart';
 import 'package:elredio_assignment/data_repo/view/custom_button.dart';
 import 'package:elredio_assignment/data_repo/view/custom_radio_button.dart';
 import 'package:elredio_assignment/data_repo/view/custom_textfield.dart';
+import 'package:elredio_assignment/data_repo/view_model/screen_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class ParseWidget extends StatefulWidget {
   const ParseWidget({
@@ -51,11 +56,20 @@ class _ParseWidgetState extends State<ParseWidget> {
     height: 20.0,
   );
 
+  ///
   DateTime? date;
+
+  ///
+  String? answer;
+
+  late ScreenViewModel screenViewModel;
 
   @override
   void initState() {
     super.initState();
+
+    ///
+    screenViewModel = Provider.of<ScreenViewModel>(context, listen: false);
 
     assignAnswer();
   }
@@ -71,6 +85,7 @@ class _ParseWidgetState extends State<ParseWidget> {
         break;
 
       case "radio":
+        answer = widget.answer;
         break;
       case "datefield":
 
@@ -200,6 +215,38 @@ class _ParseWidgetState extends State<ParseWidget> {
                     space,
 
                     ///
+                    Wrap(
+                      children: [
+                        ...List.generate(
+                          widget.currentProgressIndex > 0
+                              ? (widget.currentProgressIndex)
+                              : 0,
+                          (index) => Container(
+                            padding: const EdgeInsets.only(right: 4.0),
+                            child: RichText(
+                              text: TextSpan(
+                                text:
+                                    "${screenViewModel.screenList[index].question} ",
+                                style: AppTextStyle.textfieldTextStyle,
+                                children: [
+                                  TextSpan(
+                                    text:
+                                        screenViewModel.screenList[index].ans ??
+                                            "",
+                                    style: AppTextStyle.underLineTextStyle,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    ///
+                    widget.currentProgressIndex > 0 ? space : const SizedBox(),
+
+                    ///
                     Text(
                       widget.question ?? "",
                       style: AppTextStyle.questionTextStyle,
@@ -217,7 +264,7 @@ class _ParseWidgetState extends State<ParseWidget> {
 
                     ///
                     CustomeButton(
-                      buttonName: "Next",
+                      buttonName: AppStrings.next,
                       onTap: () {
                         validateInput(context: context);
                       },
@@ -242,13 +289,9 @@ class _ParseWidgetState extends State<ParseWidget> {
     switch (widget.fieldType) {
       case "textfield":
         if (textEditingController.text.trim().isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                AppStrings.nameValidation,
-                style: AppTextStyle.headingTextStyle,
-              ),
-            ),
+          ///
+          showValidationMessage(
+            message: AppStrings.nameValidation,
           );
 
           return false;
@@ -257,32 +300,58 @@ class _ParseWidgetState extends State<ParseWidget> {
         break;
 
       case "radio":
-        widget.onTap(textEditingController.text.trim());
+        if (answer == "" || (answer?.trim().isEmpty ?? true)) {
+          ///
+          showValidationMessage(
+            message: AppStrings.pleaseSelectOneOption,
+          );
+
+          return false;
+        }
+
+        log("Answer $answer");
+        widget.onTap(answer ?? "gg");
         break;
 
       case "datefield":
+        if (textEditingController.text.trim().isEmpty) {
+          ///
+          showValidationMessage(
+            message: AppStrings.pleaseSelectDate,
+          );
+
+          return false;
+        }
         widget.onTap(textEditingController.text.trim());
         break;
 
       default:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppStrings.somethingWentWrong,
-              style: AppTextStyle.headingTextStyle,
-            ),
-          ),
+
+        ///
+        showValidationMessage(
+          message: AppStrings.somethingWentWrong,
         );
+
         break;
     }
+  }
+
+  ///TO SHOW ERROR MESSAGE
+  showValidationMessage({required String message}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: AppTextStyle.headingTextStyle,
+        ),
+      ),
+    );
   }
 
   ///
   Widget showWidget({required BuildContext context}) {
     switch (widget.fieldType) {
       case "textfield":
-
-        ///
         return CustomTextField(
           textEditingController: textEditingController,
           hintText: widget.hintText ?? "",
@@ -291,6 +360,11 @@ class _ParseWidgetState extends State<ParseWidget> {
       case "radio":
         return CustomRadio(
           options: widget.options ?? [],
+          ans: answer ?? "",
+          onTap: (String? answer) {
+            this.answer = answer;
+            setState(() {});
+          },
         );
 
       case "datefield":
@@ -306,6 +380,8 @@ class _ParseWidgetState extends State<ParseWidget> {
             if (date != null) {
               textEditingController.text =
                   "${date?.year}-${date?.month}-${date?.day}";
+              textEditingController.text =
+                  DateFormat("yyyy-MM-dd").format(date!);
             }
           },
           child: CustomTextField(

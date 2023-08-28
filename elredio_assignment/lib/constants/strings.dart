@@ -123,5 +123,31 @@ class AppStrings {
 
   static String nameValidation = "Please enter a name!";
 
-  static String somethingWentWrong="Something went wrong!";
+  static String somethingWentWrong = "Something went wrong!";
+
+  static String pleaseSelectOneOption = "Please select an one option!";
+
+  static String pleaseSelectDate = "Please select a date!";
+
+  static String confirm = "Confirm";
+  static String next = "Next";
+
+  static String profileSummary = "Profile Summary";
+
+  static String hi = "Hi";
+
+  static String youDidIt = "You did it";
+
+  static String reviewYourChanges =
+      "Please review your answers below and do change if any or confirm and continue.";
+
+  static String myPersonalDetails = "My personal details";
+
+  static String howIKeepBusy = "How I Keep Busy";
+
+  static String success = "Success";
+
+  static String failure = "Failure";
+
+  static String ok = "Ok";
 }
