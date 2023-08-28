@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.elredio_assignment">
    <application
-        android:label="elredio_assignment"
+        android:label="Elredio"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
