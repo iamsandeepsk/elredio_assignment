@@ -291,14 +291,18 @@ class FinalScreen extends StatelessWidget {
           actions: [
             ElevatedButton(
               onPressed: () {
-                ///
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MainPage(),
-                  ),
-                  (route) => false,
-                );
+                if (isSuccess) {
+                  ///
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MainPage(),
+                    ),
+                    (route) => false,
+                  );
+                } else {
+                  Navigator.pop(context);
+                }
               },
               style: ElevatedButton.styleFrom(
                 primary: AppColors.enabledButtonColor,
